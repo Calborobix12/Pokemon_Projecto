@@ -1,0 +1,79 @@
+# Projecte_Pokemon
+
+## Descripció
+Aquest projecte és una simulació de pelees Pokémon desenvolupada en HTML i JavaScript. L'objectiu és proporcionar una experiència interactiva on els usuaris puguin seleccionar els seus Pokémon preferits i participar en combats simulats.
+
+## Instal·lació i Git
+Segueix aquests passos per configurar el projecte en el teu equip i pujar-lo a GitHub:
+
+### 1. Preparar el repositori local
+- **Inicialitzar Git (si encara no ho has fet):**  
+git init
+
+- **Afegir els fitxers del projecte:**  
+git add .
+
+- **Fer el primer commit:**  
+git commit -m "Commit inicial del projecte"
+
+### 2. Crear un repositori a GitHub
+- Inicia sessió a GitHub.
+- Fes clic a **"New repository"** i crea el teu repositori (per exemple, `pokemon-project`).
+- Copia l'URL del repositori, per exemple:  
+`https://github.com/nomusuari/pokemon-project.git`
+
+### 3. Enllaçar el repositori local amb GitHub
+- **Afegir l'origen remot:**  
+git remote add origin https://github.com/nomusuari/pokemon-project.git
+
+- **Verificar que l'origen s'ha afegit correctament:**  
+git remote -v
+
+### 4. Pujar el projecte a GitHub
+Quan se't demani, utilitza el token en lloc de la contrasenya:
+- Introdueix el teu nom d'usuari GitHub.
+- Quan es demani la contrasenya, enganxa el teu Personal Access Token.
+- **Executar el push:**  
+git push -u origin master
+
+*Nota:* Si el teu branch per defecte és `main`, substitueix `master` per `main`.
+
+### 5. Flux de treball diari per actualitzar el projecte
+- **Fes canvis localment:** Edita el teu codi al teu ordinador.
+- **Afegir els canvis:**  
+git add .
+
+- **Fer commit dels canvis:**  
+git commit -m "Descripció dels canvis"
+
+- **Actualitzar el repositori local amb els canvis remots:**  
+git pull origin master
+
+*Nota:* Substitueix `master` per `main` si és necessari.
+- **Pujar els canvis a GitHub:**  
+git push -u origin master
+
+## Ús del projecte
+Per executar el projecte:
+- Obre el fitxer `index.html` amb el teu navegador preferit (Chrome, Firefox, Edge, etc.).
+- Interactua amb la simulació de combats Pokémon segons les instruccions de la interfície.
+
+## Contribució
+Les contribucions són benvingudes!  
+Si vols contribuir, segueix aquests passos:
+1. Fes un fork del repositori.
+2. Crea una branca per fer els teus canvis:
+git checkout -b nova-funcionalitat
+3. Fes els teus canvis i comprova que tot funcioni correctament.
+4. Envia un pull request amb una descripció detallada dels canvis.
+
+## Llicència
+Aquest projecte es distribueix sota la llicència [Cal]
+
+## Contacte
+Per a consultes, suggeriments o altres comentaris, pots contactar-me a través del correu:
+- **Email:** [dfont@insdanielblanxart.cat]
+
+---
+
+*Gràcies per provar "Projecte_Pokemon"! Esper que gaudeixis de l'experiència de combat Pokémon.*
