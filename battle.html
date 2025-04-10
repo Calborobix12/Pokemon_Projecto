@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokémon Team Builder - Batalla</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+      }
+      header {
+        background-color: #ff0000;
+        padding: 20px;
+        text-align: center;
+      }
+      h1, h2, h3 {
+        margin: 0 0 10px 0;
+      }
+      main {
+        padding: 20px;
+      }
+      /* Contenedor principal de la batalla */
+      .battle-display {
+        background-color: #fff;
+        border: 2px solid #007BFF;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      /* Contenedores para mostrar los equipos */
+      .team-display {
+        margin-bottom: 20px;
+      }
+      .team-grid {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        overflow-x: auto;
+      }
+      .pokemon-card {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 150px;
+        text-align: center;
+      }
+      .pokemon-card img {
+        max-width: 100%;
+      }
+      /* Estilo para mostrar que un Pokémon está derrotado */
+      .pokemon-card.defeated {
+        border: 2px solid red;
+        background-color: rgba(255, 0, 0, 0.1);
+      }
+      /* Estilo para el log de batalla */
+      #battle-log {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #f9f9f9;
+      }
+      button {
+        padding: 10px 15px;
+        border: none;
+        background-color: #007BFF;
+        color: #fff;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Batalla Pokémon</h1>
+    </header>
+    <main>
+      <section id="battle-section">
+        <div id="battle-display" class="battle-display">
+          <h2>Batalla en curso (Cada Pokémon tiene 500 de Vida en total)</h2>
+          <!-- Se muestran los equipos -->
+          <div id="team1-display" class="team-display"></div>
+          <div id="team2-display" class="team-display"></div>
+          <!-- Log de la batalla -->
+          <button id="attack-button">Atacar al rival</button>
+          <button id="restart-button">Reiniciar Juego</button>
+          <div id="battle-log"></div>
+        </div>
+      </section>
+    </main>
+    <script src="Pokemon.js"></script>
+    <script>
+      // Reiniciar juego:
+      document.getElementById("restart-button").addEventListener("click", () => {
+        localStorage.removeItem("team1");
+        localStorage.removeItem("team2");
+        window.location.href = "index.html";
+      });
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const battleDisplay = document.getElementById("battle-display");
+        const battleLog = document.getElementById("battle-log");
+        const attackButton = document.getElementById("attack-button");
+        const team1Display = document.getElementById("team1-display");
+        const team2Display = document.getElementById("team2-display");
+        
+        // Recuperar datos de los equipos desde localStorage
+        const team1Data = JSON.parse(localStorage.getItem("team1") || "[]");
+        const team2Data = JSON.parse(localStorage.getItem("team2") || "[]");
+        
+        // Si no hay datos, mostrar mensaje de error
+        if (team1Data.length === 0 || team2Data.length === 0) {
+          battleDisplay.innerHTML = "<p>No se han cargado los equipos. Por favor, regresa y selecciona tus Pokémon.</p>";
+          attackButton.disabled = true;
+          return;
+        }
+        
+        // Función para rehidratar cada Pokémon
+        function rehydrateTeam(teamData) {
+          return teamData.map(data => {
+            switch(data.class_type) {
+              case 'FirePokemon': return new FirePokemon(data.name, data.points, data.specialPower);
+              case 'WaterPokemon': return new WaterPokemon(data.name, data.points, data.specialPower);
+              case 'GrassPokemon': return new GrassPokemon(data.name, data.points, data.specialPower);
+              case 'ElectricPokemon': return new ElectricPokemon(data.name, data.points, data.specialPower);
+              case 'PoisonPokemon': return new PoisonPokemon(data.name, data.points, data.specialPower);
+              case 'FlyingPokemon': return new FlyingPokemon(data.name, data.points, data.specialPower);
+              case 'BugPokemon': return new BugPokemon(data.name, data.points, data.specialPower);
+              case 'PsychicPokemon': return new PsychicPokemon(data.name, data.points, data.specialPower);
+              case 'RockPokemon': return new RockPokemon(data.name, data.points, data.specialPower);
+              case 'GroundPokemon': return new GroundPokemon(data.name, data.points, data.specialPower);
+              case 'IcePokemon': return new IcePokemon(data.name, data.points, data.specialPower);
+              case 'DragonPokemon': return new DragonPokemon(data.name, data.points, data.specialPower);
+              case 'DarkPokemon': return new DarkPokemon(data.name, data.points, data.specialPower);
+              case 'SteelPokemon': return new SteelPokemon(data.name, data.points, data.specialPower);
+              case 'FairyPokemon': return new FairyPokemon(data.name, data.points, data.specialPower);
+              case 'FightingPokemon': return new FightingPokemon(data.name, data.points, data.specialPower);
+              case 'GhostPokemon': return new GhostPokemon(data.name, data.points, data.specialPower);
+              default: return new Pokemon(data.name, data.types, data.points, data.specialPower);
+            }
+          });
+        }
+        
+        const team1Rehydrated = rehydrateTeam(team1Data);
+        const team2Rehydrated = rehydrateTeam(team2Data);
+        const player1Name = localStorage.getItem("player1Name") || "Jugador 1";
+        const player2Name = localStorage.getItem("player2Name") || "Jugador 2";
+        const player1 = new Player(player1Name, { selectedTeam: team1Rehydrated });
+        const player2 = new Player(player2Name, { selectedTeam: team2Rehydrated });
+    
+        // Iniciar la batalla dinámica pasando los contenedores de equipos y el log
+        dynamicBattle(player1, player2, team1Display, team2Display, battleLog, attackButton);
+      });
+    </script>
+  </body>
+</html>

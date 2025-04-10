@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokémon Team Builder - Selección de Equipo</title>
+    <style>
+      /* Estilos Globales */
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      
+      header {
+        background-color: #000000;
+        color: #FFFFFF;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+      
+      main {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        text-align: center;
+      }
+      
+      /* Secciones generales */
+      section {
+        background: #FFFFFF;
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        border: 2px solid #000000;
+      }
+      
+      section h2 {
+        margin-top: 0;
+        color: #000000;
+      }
+      
+      /* Botones con forma redondeada */
+      button {
+        padding: 12px 25px;
+        background-color: #000000;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px;
+        transition: background-color 0.3s ease;
+      }
+      
+      button:hover {
+        background-color: #333333;
+      }
+      
+      /* Sección de selección de equipo */
+      #team-selection-section {
+        text-align: center;
+      }
+      
+      #current-player-selection {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 15px 0;
+      }
+      
+      /* Grilla de equipo */
+      #selected-team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 10px;
+      }
+      
+      /* Créditos */
+      #credits-section h2 {
+        margin-bottom: 10px;
+      }
+      
+      #credits-display {
+        font-size: 18px;
+        font-weight: bold;
+        color: #000000;
+      }
+      
+      /* Opciones de ordenación */
+      #sort-options-section form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      #sort-options-section fieldset {
+        border: 1px solid #000000;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+        width: 80%;
+      }
+      
+      #sort-options-section legend {
+        font-weight: bold;
+        color: #000000;
+      }
+      
+      #sort-options-section label {
+        margin-right: 10px;
+        font-size: 16px;
+      }
+      
+      #sort-options-section button {
+        background-color: #000000;
+        color: #FFFFFF;
+        border: none;
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      
+      #sort-options-section button:hover {
+        background-color: #333333;
+      }
+      
+      /* Grilla de Pokémon */
+      #pokemon-grid-section h2 {
+        margin-bottom: 10px;
+      }
+      
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 10px;
+      }
+      
+      .grid-container .pokemon-card {
+        background: #FFFFFF;
+        border: 1px solid #000000;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+      }
+      
+      .grid-container .pokemon-card:hover {
+        transform: scale(1.05);
+      }
+      
+      .grid-container .pokemon-card img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #000000;
+        margin-bottom: 10px;
+      }
+      
+      /* Cuando una tarjeta está seleccionada se pone verde */
+      .grid-container .pokemon-card.selected {
+        border: 2px solid #4CAF50;
+        background-color: rgba(76, 175, 80, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Pokémon Team Builder - Selección de Equipo</h1>
+    </header>
+    <main>
+      <!-- Sección de Selección de Equipo -->
+      <section id="team-selection-section">
+        <h2>Selecciona tu Equipo</h2>
+        <p id="current-player-selection"></p>
+        <button id="next-player-button">Clica para que pase al Siguiente Jugador // CPU selecciona a sus pokemons</button>
+      </section>
+
+      <!-- Visualización del Equipo y Controles -->
+      <section id="team-section">
+        <h2>Tu Equipo</h2>
+        <div id="selected-team-grid" class="grid-container"></div>
+        <div class="team-controls">
+          <button id="clear-team">Limpiar Equipo</button>
+          <button id="start-battle-button">Empezar batalla</button>
+        </div>
+      </section>
+
+      <!-- Créditos -->
+      <section id="credits-section">
+        <h2>Créditos</h2>
+        <p id="credits-display">Créditos disponibles: 750</p>
+      </section>
+
+      <!-- Opciones de Ordenación -->
+      <section id="sort-options-section">
+        <h2>Opciones de Ordenación</h2>
+        <form id="sort-options-form">
+          <fieldset>
+            <legend>Ordenar por:</legend>
+            <label>
+              <input type="radio" name="sort-criteria" value="name" checked />
+              Nombre
+            </label>
+            <label>
+              <input type="radio" name="sort-criteria" value="points" />
+              Puntos
+            </label>
+            <label>
+              <input type="radio" name="sort-criteria" value="type" />
+              Tipo
+            </label>
+          </fieldset>
+          <fieldset>
+            <legend>Método de ordenación:</legend>
+            <label>
+              <input type="radio" name="sort-method" value="bubble" checked />
+              Burbuja
+            </label>
+            <label>
+              <input type="radio" name="sort-method" value="insertion" />
+              Inserción
+            </label>
+            <label>
+              <input type="radio" name="sort-method" value="selection" />
+              Selección
+            </label>
+          </fieldset>
+          <button type="button" id="sort-team">Ordenar</button>
+        </form>
+      </section>
+
+      <!-- Grilla de Pokémon -->
+      <section id="pokemon-grid-section">
+        <h2>Pokémon Grid</h2>
+        <div id="pokemon-grid" class="grid-container"></div>
+      </section>
+    </main>
+    <script src="Pokemon.js"></script>
+    <script src="4.1.newTestModel.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        if (window.location.pathname.includes("battle.html")) {
+          // Código para battle.html (se gestiona en battle.html)
+        } else {
+          const player1Name = localStorage.getItem("player1Name");
+          const player2Name = localStorage.getItem("player2Name") || "CPU";
+          const isTwoPlayer = localStorage.getItem("isTwoPlayer") === "true";
+
+          const viewModel1 = new PokemonTeamViewModel();
+          const viewModel2 = new PokemonTeamViewModel();
+          let currentViewModel = viewModel1;
+
+          const ui = new PokemonUI(currentViewModel);
+          await ui.init();
+
+          // Compartir la lista de Pokémon para el segundo jugador
+          viewModel2.pokemonList = viewModel1.pokemonList;
+
+          const teamSelectionSection = document.getElementById("team-selection-section");
+          const currentPlayerSelection = document.getElementById("current-player-selection");
+          const nextPlayerButton = document.getElementById("next-player-button");
+          const startBattleButton = document.getElementById("start-battle-button");
+
+          teamSelectionSection.style.display = "block";
+
+          if (isTwoPlayer) {
+            currentPlayerSelection.textContent = `${player1Name}, selecciona tus Pokémon`;
+            nextPlayerButton.onclick = () => {
+              if (currentViewModel.team.selectedTeam.length === 0) {
+                alert(`${currentViewModel === viewModel1 ? player1Name : player2Name}, selecciona al menos un Pokémon.`);
+                return;
+              }
+              if (currentViewModel === viewModel1) {
+                // Limpiar la grilla del equipo del jugador 1 antes de pasar al turno del jugador 2
+                const teamGrid = document.getElementById("selected-team-grid");
+                if (teamGrid) {
+                  teamGrid.innerHTML = "";
+                }
+                // Cambiar al viewModel del jugador 2 y actualizar la lista global de Pokémon
+                currentViewModel = viewModel2;
+                currentPlayerSelection.textContent = `${player2Name}, selecciona tus Pokémon`;
+                ui.viewModel = currentViewModel;
+                ui.renderGlobalList();
+              } else {
+                teamSelectionSection.style.display = "none";
+              }
+            };
+          } else {
+            nextPlayerButton.onclick = () => {
+              if (currentViewModel.team.selectedTeam.length === 0) {
+                alert(`${player1Name}, selecciona al menos un Pokémon.`);
+                return;
+              }
+              viewModel2.team.selectedTeam = [];
+              const allPokemons = ui.viewModel.pokemonList.allPokemons;
+              const availablePokemons = allPokemons.filter(p => !viewModel1.team.selectedTeam.some(x => x.name === p.name));
+              availablePokemons.sort(() => 0.5 - Math.random());
+              for (let i = 0; i < Math.min(6, availablePokemons.length); i++) {
+                viewModel2.team.addPokemon(availablePokemons[i]);
+              }
+              alert("¡Equipo de CPU seleccionado automáticamente!");
+              teamSelectionSection.style.display = "none";
+            };
+          }
+
+          startBattleButton.addEventListener("click", () => {
+            if (viewModel1.team.selectedTeam.length === 0) {
+              alert("Jugador 1 debe seleccionar al menos un Pokémon.");
+              return;
+            }
+            if (isTwoPlayer && viewModel2.team.selectedTeam.length === 0) {
+              alert("Jugador 2 debe seleccionar al menos un Pokémon.");
+              return;
+            }
+            localStorage.setItem("team1", JSON.stringify(viewModel1.team.selectedTeam));
+            localStorage.setItem("team2", JSON.stringify(viewModel2.team.selectedTeam));
+            window.location.href = "battle.html";
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
